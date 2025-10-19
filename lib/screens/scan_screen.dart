@@ -25,7 +25,7 @@ class _ScanScreenState extends State<ScanScreen> {
     _initCamera();
   }
 
-  void _initCamera() async {
+  Future<void> _initCamera() async {
     cameras = await availableCameras();
     _controller = CameraController(cameras[0], ResolutionPreset.medium);
     _initializeControllerFuture = _controller.initialize();
@@ -64,8 +64,7 @@ class _ScanScreenState extends State<ScanScreen> {
       if (!mounted) return;
       Navigator.push(
         context,
-        MaterialPageRoute(
-            builder: (_) => ResultScreen(ocrText: ocrText)),
+        MaterialPageRoute(builder: (_) => ResultScreen(ocrText: ocrText)),
       );
     } catch (e) {
       if (!mounted) return;
@@ -77,31 +76,34 @@ class _ScanScreenState extends State<ScanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_controller.value.isInitialized) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(title: const Text('Kamera OCR')),
-      body: Column(
-        children: [
-          Expanded(
-            child: AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              child: CameraPreview(_controller),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton.icon(
-              onPressed: _takePicture,
-              icon: const Icon(Icons.camera),
-              label: const Text('Ambil Foto & Scan'),
-            ),
-          ),
-        ],
+      body: FutureBuilder<void>(
+        future: _initializeControllerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Column(
+              children: [
+                Expanded(
+                  child: AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: CameraPreview(_controller),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ElevatedButton.icon(
+                    onPressed: _takePicture,
+                    icon: const Icon(Icons.camera),
+                    label: const Text('Ambil Foto & Scan'),
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
   }
