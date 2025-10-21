@@ -66,12 +66,14 @@ class _ScanScreenState extends State<ScanScreen> {
         context,
         MaterialPageRoute(builder: (_) => ResultScreen(ocrText: ocrText)),
       );
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-    }
+      }catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Pemindaian Gagal! Periksa Izin Kamera atau coba lagi.'),
+          ),
+        );
+      }
   }
 
   @override
@@ -101,7 +103,22 @@ class _ScanScreenState extends State<ScanScreen> {
               ],
             );
           } else {
-            return const Center(child: CircularProgressIndicator());
+            return Scaffold(
+              backgroundColor: Colors.grey[900],
+              body: const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(color: Colors.yellow),
+                    SizedBox(height: 20),
+                    Text(
+                      'Memuat Kamera... Harap tunggu.',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                  ],
+                ),
+              ),
+            );
           }
         },
       ),
