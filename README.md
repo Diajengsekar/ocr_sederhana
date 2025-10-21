@@ -111,9 +111,11 @@ git push origin main
 
 **Hasil saat dijalankan :**
 •	Run pada device ponsel :
+
 ![Screenshot](images/hasil1.png)
 
 •   Hasil saat dijalankan di ponsel :
+
 ![Screenshot](images/hasil2.png)
 ![Screenshot](images/hasil3.png)
 ![Screenshot](images/hasil4.png)
